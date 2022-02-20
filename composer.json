@@ -1,4 +1,7 @@
 {
   "name": "dodul/jambura-core",
-  "version": "1.0"
+  "version": "1.0",
+  "require": {
+    "robmorgan/phinx": "0.12.10"
+  }
 }
