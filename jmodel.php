@@ -1,6 +1,7 @@
 <?php
 class jModel {
     protected $table;
+    protected $tableName;
     protected $count = false;
     protected $eachCount = 0;
     protected $relations = array();
@@ -12,7 +13,7 @@ class jModel {
         # FIXME this will cause problems if a table name comes
         # with underscore(_), explode should be replaced by a 
         # better logic considering underscores in table names
-	      $tableName = explode('_', $child)[1];
+	      $tableName = $this->tableName ? $this->tableName : explode('_', $child)[1];
 	      if ($id) {
 	          $this->table = ORM::for_table($tableName)->find_one($id);
             $this->loadRelations($id);
