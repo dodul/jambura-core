@@ -8,19 +8,19 @@ class jModel {
 
     private $reldata = array();
 
-    public function __construct($id = 0) {
+    public function __construct($id = 0) 
+    {
         $child = get_class($this);
         # FIXME this will cause problems if a table name comes
         # with underscore(_), explode should be replaced by a 
         # better logic considering underscores in table names
-	      $tableName = $this->tableName ? $this->tableName : explode('_', $child)[1];
-	      if ($id) {
-	          $this->table = ORM::for_table($tableName)->find_one($id);
+        $tableName = $this->tableName ? $this->tableName : explode('_', $child)[1];
+        if ($id) {
+            $this->table = ORM::for_table($tableName)->find_one($id);
             $this->loadRelations($id);
         } else {
             $this->table = ORM::for_table($tableName)->create();
-            //$this->table = ORM::for_table($tableName)->create();
-	      }
+        }
     }
 
     /**
@@ -37,7 +37,8 @@ class jModel {
      *
      * @param int $id id of column
      */
-    protected function loadRelations($id) {
+    protected function loadRelations($id) 
+    {
         if (empty($this->relations)) {
             return;
         }
@@ -180,7 +181,7 @@ class jModel {
             // first argument will be column and second argument will be expression
             if(is_array($value)){                
                 $this->table->set_expr($value[0], $value[1]);
-            }else{
+            } else {
                 $this->table->$column = $value;
             }
         }
@@ -191,9 +192,23 @@ class jModel {
        $this->table->delete(); 
     }
 
+    public function beforeSave()
+    {
+        return;
+    }
+
+    public function afterSave()
+    {
+        return;
+    }
+
     public function save() {
-       $this->table->save();
-       return $this->table->id();
+        $this->beforeSave();
+        if ($this->table->save()) {
+            $this->afterSave();
+            return $this->table->id();
+        }
+        return false;
     }
 
     public function resetCounter() {
