@@ -212,7 +212,7 @@ class jModel {
 
     private function validateColumn($column, $value)
     {
-        $vaidationType = $this->validation()[$column][0];
+        $validationType = $this->validation()[$column][0];
 
         switch($validationType) {
             case 'regex':
