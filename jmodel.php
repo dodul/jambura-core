@@ -87,7 +87,7 @@ class jModel {
 
     public function __set($column, $value) {
         if (isset($this->validation()[$column])) {
-            $this->validateColumn($column);
+            $this->validateColumn($column, $value);
         }
 
 	      $this->table->$column = $value;
