@@ -144,7 +144,7 @@ class jController {
     
     protected function redirect($url, $permanent = false) {
         if (headers_sent() === false) {
-            $_SESSION['refRequests'] = $_REQUEST;
+            $_SESSION['refRequest'] = $_REQUEST;
             header('Location: ' . $url, true, ($permanent === true) ? 301 : 302);
         }
         exit();
