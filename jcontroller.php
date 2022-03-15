@@ -150,6 +150,15 @@ class jController {
         exit();
     }
 
+    protected function refRequest($param)
+    {
+        if (!isset($this->refRequest[$param])) {
+            return false;
+        }
+
+        return $this->refRequest[$param];
+    }
+
     public function init() {
         // empty
     }
