@@ -1,4 +1,6 @@
 <?php
+class JamburaValidationError extends Exception{};
+class JamburaSystemError extends Exception{};
 class jModel {
     protected $table;
     protected $tableName;
@@ -21,6 +23,11 @@ class jModel {
         } else {
             $this->table = ORM::for_table($tableName)->create();
         }
+    }
+
+    protected function validation()
+    {
+        return [];
     }
 
     /**
@@ -79,9 +86,10 @@ class jModel {
     }
 
     public function __set($column, $value) {
-	      //if (isset($this->table->$column)) {
-	      //    $this->table->$column = $value;
-	      //}
+        if (isset($this->validation()[$column])) {
+            $this->validateColumn($column);
+        }
+
 	      $this->table->$column = $value;
     }
 
@@ -192,14 +200,42 @@ class jModel {
        $this->table->delete(); 
     }
 
-    public function beforeSave()
+    protected function beforeSave()
     {
         return;
     }
 
-    public function afterSave()
+    protected function afterSave()
     {
         return;
+    }
+
+    private function validateColumn($column, $value)
+    {
+        $vaidationType = $this->validation()[$column][0];
+
+        switch($validationType) {
+            case 'regex':
+                $pattern = $this->validation()[$column][1];
+                if (!preg_match($pattern, $value)) {
+                    $errorMEssage = isset($this->validation()[$column][2]) 
+                        ? $this->validation()[$column][2] 
+                        : "$column value $value does not match required pattern $pattern";
+                    throw new JamburaValidationError($errorMessage);
+                }
+                break;
+            case 'function':
+                $functionName = $this->validation()[$column][1];
+                if (!$this->$functionName($value)) {
+                    $errorMEssage = isset($this->validation()[$column][2]) 
+                        ? $this->validation()[$column][2] 
+                        : "$column value $value failed to validate";
+                    throw new JamburaValidationError($errorMessage);
+                }
+                break;
+            default:
+                throw new JamburaSystemError("Unknown validation type $validationType");
+        }
     }
 
     public function save() {
