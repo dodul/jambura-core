@@ -13,22 +13,29 @@ class jController {
     private $headers  = null;
 
     public function __construct($api = false) {
-	if ($api) {
-	    $this->parseApi = true;
-	}
+        if ($api) {
+            $this->parseApi = true;
+        }
+
         $this->assets = new jAssets();
         $this->cache  = jCache::init();
-	// FIXME base controller should have been defined as an abstruct
-	// class if this init is kept like this.
+        // FIXME base controller should have been defined as an abstruct
+        // class if this init is kept like this.
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        $this->data['jFlash'] = new jFlash();        
-	$this->init();
+
+        if (isset($_SESSION['refRequest'])) {
+            $this->data['refRequest'] = $_SESSION['refRequest'];
+            unset($_SESSION['refRequest']);
+        }
+
+        $this->data['jFlash'] = new jFlash();
+        $this->init();
     }
 
     public function __set($var, $value) {
-	$this->data[$var] = $value;
+        $this->data[$var] = $value;
     }
 
     public function __isset($name){
@@ -137,6 +144,7 @@ class jController {
     
     protected function redirect($url, $permanent = false) {
         if (headers_sent() === false) {
+            $_SESSION['refRequests'] = $_REQUEST;
             header('Location: ' . $url, true, ($permanent === true) ? 301 : 302);
         }
         exit();
