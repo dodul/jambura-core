@@ -218,7 +218,7 @@ class jModel {
             case 'regex':
                 $pattern = $this->validation()[$column][1];
                 if (!preg_match($pattern, $value)) {
-                    $errorMEssage = isset($this->validation()[$column][2]) 
+                    $errorMessage = isset($this->validation()[$column][2]) 
                         ? $this->validation()[$column][2] 
                         : "$column value $value does not match required pattern $pattern";
                     throw new JamburaValidationError($errorMessage);
@@ -227,7 +227,7 @@ class jModel {
             case 'function':
                 $functionName = $this->validation()[$column][1];
                 if (!$this->$functionName($value)) {
-                    $errorMEssage = isset($this->validation()[$column][2]) 
+                    $errorMessage = isset($this->validation()[$column][2]) 
                         ? $this->validation()[$column][2] 
                         : "$column value $value failed to validate";
                     throw new JamburaValidationError($errorMessage);
