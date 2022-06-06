@@ -9,6 +9,8 @@ class jModel {
     protected $relations = array();
 
     private $reldata = array();
+    private $changed = false;
+    private $changeLog = array();
 
     public function __construct($id = 0) 
     {
@@ -89,8 +91,25 @@ class jModel {
         if (isset($this->validation()[$column])) {
             $this->validateColumn($column, $value);
         }
-
+        if ($this->table->id() && ($this->table->$column != $value)) {
+            $this->changed = true;
+            $this->changeLog[$column] = [
+                'oldValue' => $this->table->$column,
+                'newValue' => $value
+            ];
+        }
+        
 	      $this->table->$column = $value;
+    }
+
+    public function isChanged()
+    {
+        return $this->changed;
+    }
+
+    public function diff()
+    {
+        return $this->changeLog;
     }
 
     public function __isset($column) {
