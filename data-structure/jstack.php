@@ -1,15 +1,10 @@
 <?php
 class jStack extends jDataStructures
 {
-    public function __construct($data)
-    {
-        parent::__construct($data);
-    }
-
     /**
      * put the element to the last position
      * @param mixed $elem
-     * @return jQueue
+     * @return jStack
      */
     public function push($elem)
     {
@@ -28,7 +23,7 @@ class jStack extends jDataStructures
             throw new Exception('The Stack is Empty');
         }
 
-        return end($this->_data);
+        return $this->_data[array_key_last($this->_data)];
     }
 
     /**

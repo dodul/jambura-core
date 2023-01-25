@@ -3,7 +3,7 @@ abstract class jDataStructures
 {
     protected $_data;
 
-    protected function __construct($data)
+    public function __construct($data)
     {
         $this->_data = $data;
     }
