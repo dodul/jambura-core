@@ -1,9 +1,11 @@
 <?php
 class jQueue extends jDataStructures
 {
+    private $_head;
     public function __construct($data)
     {
         parent::__construct($data);
+        $this->_head = array_key_first($data);
     }
 
     /**
@@ -13,7 +15,7 @@ class jQueue extends jDataStructures
      */
     public function push($elem)
     {
-        array_unshift($this->_data, $elem);
+        array_push($this->_data, $elem);
         return $this;
     }
 
@@ -28,7 +30,7 @@ class jQueue extends jDataStructures
             throw new Exception('The Queue is Empty');
         }
 
-        return $this->_data[array_key_first($this->_data)];
+        return $this->_data[$this->_head];
     }
 
     /**
@@ -42,7 +44,11 @@ class jQueue extends jDataStructures
             throw new Exception('The Queue is Empty');
         }
 
-        return array_shift($this->_data);
+        $head = $this->_data[$this->_head];
+        unset($this->_data[$this->_head]);
+        $this->_head = array_key_first($this->_data);
+
+        return $head;
     }
 
     /**
