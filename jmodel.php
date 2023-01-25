@@ -280,10 +280,13 @@ class jModel {
 
     /**
      * find and return all the rows according to the given type.
+     * 
      * if nothing is given in the params, it will simply return an Idiorm Object.
-     * if the given type is stack, it will return stack containing the found data.
-     * if the given type is queue, it will return queue containing the found data.
-     * @param mixed $type
+     * if the given type is stack, it will return jStack containing the found data.
+     * if the given type is queue, it will return jQueue containing the found data.
+     * 
+     * @param string $type
+     * 
      * @return mixed
      */
     public function findAll($type = 'array')
