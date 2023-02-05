@@ -277,4 +277,29 @@ class jModel {
     public function set_expr($key,$value) {
         $this->table->set_expr($key,$value);
     }
+
+    /**
+     * find and return all the rows according to the given type.
+     * 
+     * if nothing is given in the params, it will simply return an Idiorm Object.
+     * if the given type is stack, it will return jStack containing the found data.
+     * if the given type is queue, it will return jQueue containing the found data.
+     * 
+     * @param string $type
+     * 
+     * @return mixed
+     */
+    public function findAll($type = 'array')
+    {
+        $data = $this->table->find_many();
+        switch (strtolower($type)) {
+            case 'stack':
+                $data  = new jStack($data);
+                break;
+            case 'queue':
+                $data  = new jQueue($data);
+                break;
+        }
+        return $data;
+    }
 }
