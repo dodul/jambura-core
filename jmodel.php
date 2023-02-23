@@ -102,6 +102,12 @@ class jModel {
 	      $this->table->$column = $value;
     }
 
+    public function set($col, $value)
+    {
+        $this->table->$col = $value;
+        return $this;
+    }
+
     public function isChanged()
     {
         return $this->changed;
