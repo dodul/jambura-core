@@ -11,8 +11,8 @@
  * @license BSD http://www.opensource.org/licenses/bsd-license.php
  */
 
-class jCache {
-
+class jCache
+{
   /**
    * Instance of self
    *
@@ -47,7 +47,8 @@ class jCache {
    * @param string|array [optional] $config
    * @return void
    */
-  protected function __construct($config = null) {
+  protected function __construct($config = null)
+  {
     if (true === isset($config)) {
       if (is_string($config)) {
         $this->setCache($config);
@@ -64,7 +65,8 @@ class jCache {
    *
    * @return object instance of jCache
    */
-  public static function init() {
+  public static function init()
+  {
     if (null === self::$_instance) {
       self::$_instance = new jCache();
     }
@@ -77,7 +79,8 @@ class jCache {
    * @param string $key
    * @return boolean
    */
-  public function isCached($key) {
+  public function isCached($key)
+  {
     if (false != $this->_loadCache()) {
       $cachedData = $this->_loadCache();
       return isset($cachedData[$key]['data']);
@@ -92,11 +95,12 @@ class jCache {
    * @param integer [optional] $expiration
    * @return object
    */
-  public function store($key, $data, $expiration = 0) {
+  public function store($key, $data, $expiration = 0)
+  {
     $storeData = array(
-      'time'   => time(),
+      'time' => time(),
       'expire' => $expiration,
-      'data'   => serialize($data)
+      'data' => serialize($data)
     );
     $dataArray = $this->_loadCache();
     if (true === is_array($dataArray)) {
@@ -116,10 +120,12 @@ class jCache {
    * @param boolean [optional] $timestamp
    * @return string
    */
-  public function retrieve($key, $timestamp = false) {
+  public function retrieve($key, $timestamp = false)
+  {
     $cachedData = $this->_loadCache();
     (false === $timestamp) ? $type = 'data' : $type = 'time';
-    if (!isset($cachedData[$key][$type])) return null; 
+    if (!isset($cachedData[$key][$type]))
+      return null;
     return unserialize($cachedData[$key][$type]);
   }
 
@@ -129,7 +135,8 @@ class jCache {
    * @param boolean [optional] $meta
    * @return array
    */
-  public function retrieveAll($meta = false) {
+  public function retrieveAll($meta = false)
+  {
     if ($meta === false) {
       $results = array();
       $cachedData = $this->_loadCache();
@@ -150,7 +157,8 @@ class jCache {
    * @param string $key
    * @return object
    */
-  public function erase($key) {
+  public function erase($key)
+  {
     $cacheData = $this->_loadCache();
     if (true === is_array($cacheData)) {
       if (true === isset($cacheData[$key])) {
@@ -169,7 +177,8 @@ class jCache {
    * 
    * @return integer
    */
-  public function eraseExpired() {
+  public function eraseExpired()
+  {
     $cacheData = $this->_loadCache();
     if (true === is_array($cacheData)) {
       $counter = 0;
@@ -192,7 +201,8 @@ class jCache {
    * 
    * @return object
    */
-  public function eraseAll() {
+  public function eraseAll()
+  {
     $cacheDir = $this->getCacheDir();
     if (true === file_exists($cacheDir)) {
       $cacheFile = fopen($cacheDir, 'w');
@@ -206,7 +216,8 @@ class jCache {
    * 
    * @return mixed
    */
-  private function _loadCache() {
+  private function _loadCache()
+  {
     if (true === file_exists($this->getCacheDir())) {
       $file = file_get_contents($this->getCacheDir());
       return json_decode($file, true);
@@ -220,7 +231,8 @@ class jCache {
    * 
    * @return string
    */
-  public function getCacheDir() {
+  public function getCacheDir()
+  {
     if (true === $this->_checkCacheDir()) {
       $filename = $this->getCache();
       $filename = preg_replace('/[^0-9a-z\.\_\-]/i', '', strtolower($filename));
@@ -233,7 +245,8 @@ class jCache {
    * 
    * @return string
    */
-  private function _getHash($filename) {
+  private function _getHash($filename)
+  {
     return sha1($filename);
   }
 
@@ -244,7 +257,8 @@ class jCache {
    * @param integer $expiration
    * @return boolean
    */
-  private function _checkExpired($timestamp, $expiration) {
+  private function _checkExpired($timestamp, $expiration)
+  {
     $result = false;
     if ($expiration !== 0) {
       $timeDiff = time() - $timestamp;
@@ -258,7 +272,8 @@ class jCache {
    * 
    * @return boolean
    */
-  private function _checkCacheDir() {
+  private function _checkCacheDir()
+  {
     if (!is_dir($this->getCachePath()) && !mkdir($this->getCachePath(), 0775, true)) {
       throw new Exception('Unable to create cache directory ' . $this->getCachePath());
     } elseif (!is_readable($this->getCachePath()) || !is_writable($this->getCachePath())) {
@@ -275,7 +290,8 @@ class jCache {
    * @param string $path
    * @return object
    */
-  public function setCachePath($path) {
+  public function setCachePath($path)
+  {
     $this->_cachepath = $path;
     return $this;
   }
@@ -285,7 +301,8 @@ class jCache {
    * 
    * @return string
    */
-  public function getCachePath() {
+  public function getCachePath()
+  {
     return $this->_cachepath;
   }
 
@@ -295,7 +312,8 @@ class jCache {
    * @param string $name
    * @return object
    */
-  public function setCache($name) {
+  public function setCache($name)
+  {
     $this->_cachename = $name;
     return $this;
   }
@@ -305,7 +323,8 @@ class jCache {
    * 
    * @return void
    */
-  public function getCache() {
+  public function getCache()
+  {
     return $this->_cachename;
   }
 
@@ -315,7 +334,8 @@ class jCache {
    * @param string $ext
    * @return object
    */
-  public function setExtension($ext) {
+  public function setExtension($ext)
+  {
     $this->_extension = $ext;
     return $this;
   }
@@ -325,7 +345,8 @@ class jCache {
    * 
    * @return string
    */
-  public function getExtension() {
+  public function getExtension()
+  {
     return $this->_extension;
   }
 
