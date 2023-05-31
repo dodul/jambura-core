@@ -1,5 +1,6 @@
 <?php
-class jAssets {
+class jAssets
+{
     private $jsList = [];
     private $cssList = [];
     private $collection = 'default';
@@ -14,12 +15,14 @@ class jAssets {
      * @param string $collection Name of the colelction
      * @return object $this returns self object
      */
-    public function in($collection) {
+    public function in($collection)
+    {
         $this->collection = $collection;
         return $this;
     }
 
-    private function addAsset($file, &$list) {
+    private function addAsset($file, &$list)
+    {
         if ($this->isAddedBefore($list, $file)) {
             return $this;
         }
@@ -28,7 +31,7 @@ class jAssets {
             throw new Exception('File does not exist');
         }
 
-        $list[$this->collection][] = $this->root.'/'.$file;
+        $list[$this->collection][] = $this->root . '/' . $file;
 
         return $this;
     }
@@ -42,7 +45,8 @@ class jAssets {
      * @return object $this 
      * @throws Exception if file not found
      */
-    public function addJS($file) {
+    public function addJS($file)
+    {
         return $this->addAsset($file, $this->jsList);
     }
 
@@ -55,7 +59,8 @@ class jAssets {
      * @return object $this 
      * @throws Exception if file not found
      */
-    public function addCSS($file) {
+    public function addCSS($file)
+    {
         return $this->addAsset($file, $this->cssList);
     }
 
@@ -67,7 +72,8 @@ class jAssets {
      *
      * @param string $collection name of collection
      */
-    public function loadJS($collection) {
+    public function loadJS($collection)
+    {
         $this->loadAssets(
             $collection,
             $this->jsList,
@@ -84,7 +90,8 @@ class jAssets {
      *
      * @param string $collection name of collection
      */
-    public function loadCSS($collection) {
+    public function loadCSS($collection)
+    {
         $this->loadAssets(
             $collection,
             $this->cssList,
@@ -104,7 +111,8 @@ class jAssets {
      * @param string $before     The first part of the tag before filename
      * @param string $after      The last part of the tag adter filename
      */
-    private function loadAssets($collection, $list, $before, $after) {
+    private function loadAssets($collection, $list, $before, $after)
+    {
         if (!isset($list[$collection])) {
             return;
         }
@@ -122,12 +130,13 @@ class jAssets {
      *
      * @return bool
      */
-    private function isAddedBefore($list, $file) {
+    private function isAddedBefore($list, $file)
+    {
         if (!isset($list[$this->collection])) {
             return false;
         }
 
-        if (in_array(ROOT.'/'.$file, $list[$this->collection])) {
+        if (in_array(ROOT . '/' . $file, $list[$this->collection])) {
             return true;
         }
 
@@ -139,7 +148,8 @@ class jAssets {
      *
      * @param string $root root url
      */
-    public function setRoot($root) {
+    public function setRoot($root)
+    {
         $this->root = $root;
     }
 }
