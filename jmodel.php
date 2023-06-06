@@ -257,6 +257,19 @@ class jModel {
         }
     }
 
+    /**
+     * checks if the record already exists in the table or not
+     * 
+     * if the record exists, it returns false
+     * if a new record is added, it returns true
+     * 
+     * @return bool
+     */
+    public function newRecord()
+    {
+        return $this->table->id() === null ? true : false;
+    }
+
     public function save() {
         $this->beforeSave();
         if ($this->table->save()) {
