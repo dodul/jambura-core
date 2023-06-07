@@ -32,6 +32,11 @@ class jModel {
         return [];
     }
 
+    protected function triggers()
+    {
+        return [];
+    }
+
     /**
      * Loads ORM models if relations are defined.
      *
@@ -227,12 +232,24 @@ class jModel {
 
     protected function beforeSave()
     {
-        return;
+        $function_name = $this->triggers()['beforeSave'];
+        if (
+            isset($this->triggers()['beforeSave'])
+            && method_exists($this, $function_name)
+        ) {
+            $this->$function_name();
+        }
     }
 
     protected function afterSave()
     {
-        return;
+        $function_name = $this->triggers()['afterSave'];
+        if (
+            isset($this->triggers()['afterSave'])
+            && method_exists($this, $function_name)
+        ) {
+            $this->$function_name();
+        }
     }
 
     private function validateColumn($column, $value)
