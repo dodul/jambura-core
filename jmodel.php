@@ -265,9 +265,9 @@ class jModel {
      * 
      * @return bool
      */
-    public function newRecord()
+    public function isNewRecord(): bool
     {
-        return $this->table->id() === null ? true : false;
+        return $this->table->id() === null;
     }
 
     public function save() {
