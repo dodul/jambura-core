@@ -1,18 +1,22 @@
 <?php
-class jTestCache {
+class jTestCache
+{
     private static $cache = [];
     private static $tb = 'global';
     private static $pointer = [];
 
-    public static function add($identifier, $data) {
+    public static function add($identifier, $data)
+    {
         self::$cache[self::$tb][$identifier][] = $data;
     }
 
-    public static function setTB($tbName) {
+    public static function setTB($tbName)
+    {
         self::$tb = $tbName;
     }
 
-    public static function get($tb, $identifier) {
+    public static function get($tb, $identifier)
+    {
         if (!isset(self::$cache[$tb][$identifier])) {
             return false;
         }
