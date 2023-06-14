@@ -34,6 +34,11 @@ class jController {
         $this->init();
     }
 
+    protected function accessRules()
+    {
+        return [];
+    }
+
     public function __set($var, $value) {
         $this->data[$var] = $value;
     }
@@ -150,6 +155,24 @@ class jController {
         exit();
     }
 
+    /**
+     * Filters access to an action based on the controller methods.
+     *  
+     * If access is granted or is not mentioned, it proceeds to display the action.
+     * If access is not granted, it displays an error code (401 - Access Forbidden) and exits.
+     * 
+     * @return void
+     */
+    public function filterAccessControl()
+    {
+        $actionName = $_GET['action'];
+        $accessMethod = $this->accessRules()[$actionName];
+
+        if ($accessMethod != '' && ($this->$accessMethod() == false)) {
+            echo '(401 - Access Forbidden)';
+            exit;
+        }
+    }
     protected function refRequest($param)
     {
         if (!isset($this->refRequest[$param])) {
