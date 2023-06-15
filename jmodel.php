@@ -1,7 +1,8 @@
 <?php
 class JamburaValidationError extends Exception{};
 class JamburaSystemError extends Exception{};
-class jModel {
+class jModel
+{
     protected $table;
     protected $tableName;
     protected $count = false;
@@ -12,7 +13,7 @@ class jModel {
     private $changed = false;
     private $changeLog = array();
 
-    public function __construct($id = 0) 
+    public function __construct($id = 0)
     {
         $child = get_class($this);
         # FIXME this will cause problems if a table name comes
@@ -46,19 +47,19 @@ class jModel {
      *
      * @param int $id id of column
      */
-    protected function loadRelations($id) 
+    protected function loadRelations($id)
     {
         if (empty($this->relations)) {
             return;
         }
-        
+
         foreach ($this->relations as $key => $info) {
             $direction = isset($info['direction']) ? $info['direction'] : 'p2c';
             if ($direction == 'p2c') {
                 $table = ORM::for_table($info['table'])
                     ->where($info['column'], $id);
             } elseif ($direction == 'c2p') {
-                $this->reldata[$key] = isset($info['dest']) 
+                $this->reldata[$key] = isset($info['dest'])
                     ? ORM::for_table($info['table'])
                         ->where($info['dest'], $this->table->{$info['column']})
                         ->find_one()
@@ -78,16 +79,18 @@ class jModel {
         }
     }
 
-    public function __get($column) {
-	      if (isset($this->table->$column)) {
-	          return $this->table->$column;
-	      } elseif (isset($this->reldata[$column])) {
+    public function __get($column)
+    {
+        if (isset($this->table->$column)) {
+            return $this->table->$column;
+        } elseif (isset($this->reldata[$column])) {
             return $this->reldata[$column];
         }
-	      return false;
+        return false;
     }
 
-    public function __set($column, $value) {
+    public function __set($column, $value)
+    {
         if (isset($this->validation()[$column])) {
             $this->validateColumn($column, $value);
         }
@@ -98,8 +101,8 @@ class jModel {
                 'newValue' => $value
             ];
         }
-        
-	      $this->table->$column = $value;
+
+        $this->table->$column = $value;
     }
 
     public function set($col, $value)
@@ -118,18 +121,21 @@ class jModel {
         return $this->changeLog;
     }
 
-    public function __isset($column) {
+    public function __isset($column)
+    {
         return isset($this->table->$column);
     }
-    
-    public function __call($name, $args) {
+
+    public function __call($name, $args)
+    {
         if (preg_match('/^loadBy([a-zA-Z_]+)$/', $name, $matches)) {
             return $this->loadBy($matches[1], $args[0]);
         }
     }
 
-    public static function instance($table, $id = 0) {
-        $class = 'Model_'.$table;
+    public static function instance($table, $id = 0)
+    {
+        $class = 'Model_' . $table;
         if (!class_exists($class)) {
             throw new Exception("No model for the table $table found");
         }
@@ -141,12 +147,14 @@ class jModel {
         return $model;
     }
 
-    public static function factory($table, $id = 0) {
+    public static function factory($table, $id = 0)
+    {
         return self::instance($table, $id);
     }
 
-    public function loadBy($col, $value) {
-	      $row = $this->table->where($col, $value)->find_one();
+    public function loadBy($col, $value)
+    {
+        $row = $this->table->where($col, $value)->find_one();
         if (is_object($row)) {
             $this->count = 1;
             $this->table = $row;
@@ -157,14 +165,16 @@ class jModel {
         return $this;
     }
 
-    public function get($col) {
-       return $this->table->$col;
+    public function get($col)
+    {
+        return $this->table->$col;
     }
-    
+
     // FIXME this probably wont give right result
     // need to fix it
-    public function count() {
-        if($this->count === false) {
+    public function count()
+    {
+        if ($this->count === false) {
             if (is_object($this->table)) {
                 $this->count = 1;
             } elseif (is_array($this->table)) {
@@ -176,53 +186,58 @@ class jModel {
         return $this->count;
     }
 
-    public function loaded() {
+    public function loaded()
+    {
         if ($this->count()) {
             return true;
         }
         return false;
     }
 
-    public function each() {
+    public function each()
+    {
         if ($this->count() && is_array($this->table)) {
             $col = each($this->table);
             //print_r($col);
             return $col === false ? $col : $col[1];
         } elseif (
-            $this->count() 
+            $this->count()
             && is_object($this->table)
             && ($this->count - $this->eachCount++)
         ) {
             return $this->table;
         }
-        return false; 
+        return false;
     }
 
-    public function reset() {
-        if( is_array($this->table)) {
+    public function reset()
+    {
+        if (is_array($this->table)) {
             reset($this->table);
         }
     }
-  
-    public function add($data) {
-        if(!is_array($data)){
+
+    public function add($data)
+    {
+        if (!is_array($data)) {
             throw new Exception('Data must be supplied as array');
         }
         $this->table->create();
-        foreach($data as $column => $value){
+        foreach ($data as $column => $value) {
             // If passed as array then we consider that it need to execute mysql function
             // first argument will be column and second argument will be expression
-            if(is_array($value)){                
+            if (is_array($value)) {
                 $this->table->set_expr($value[0], $value[1]);
             } else {
                 $this->table->$column = $value;
             }
         }
-	      $this->table->save();
+        $this->table->save();
     }
 
-    public function delete() {
-       $this->table->delete(); 
+    public function delete()
+    {
+        $this->table->delete();
     }
 
     protected function beforeSave()
@@ -239,12 +254,12 @@ class jModel {
     {
         $validationType = $this->validation()[$column][0];
 
-        switch($validationType) {
+        switch ($validationType) {
             case 'regex':
                 $pattern = $this->validation()[$column][1];
                 if (!preg_match($pattern, $value)) {
-                    $errorMessage = isset($this->validation()[$column][2]) 
-                        ? $this->validation()[$column][2] 
+                    $errorMessage = isset($this->validation()[$column][2])
+                        ? $this->validation()[$column][2]
                         : "$column value $value does not match required pattern $pattern";
                     throw new JamburaValidationError($errorMessage);
                 }
@@ -252,8 +267,8 @@ class jModel {
             case 'function':
                 $functionName = $this->validation()[$column][1];
                 if (!$this->$functionName($value)) {
-                    $errorMessage = isset($this->validation()[$column][2]) 
-                        ? $this->validation()[$column][2] 
+                    $errorMessage = isset($this->validation()[$column][2])
+                        ? $this->validation()[$column][2]
                         : "$column value $value failed to validate";
                     throw new JamburaValidationError($errorMessage);
                 }
@@ -263,7 +278,8 @@ class jModel {
         }
     }
 
-    public function save() {
+    public function save()
+    {
         $this->beforeSave();
         if ($this->table->save()) {
             $this->afterSave();
@@ -272,7 +288,8 @@ class jModel {
         return false;
     }
 
-    public function resetCounter() {
+    public function resetCounter()
+    {
         $this->count = false;
     }
     /**
@@ -280,8 +297,9 @@ class jModel {
      * @param string $key column name
      * @param string $value string with expression
      */
-    public function set_expr($key,$value) {
-        $this->table->set_expr($key,$value);
+    public function set_expr($key, $value)
+    {
+        $this->table->set_expr($key, $value);
     }
 
     /**
@@ -300,10 +318,10 @@ class jModel {
         $data = $this->table->find_many();
         switch (strtolower($type)) {
             case 'stack':
-                $data  = new jStack($data);
+                $data = new jStack($data);
                 break;
             case 'queue':
-                $data  = new jQueue($data);
+                $data = new jQueue($data);
                 break;
         }
         return $data;

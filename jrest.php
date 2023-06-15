@@ -1,5 +1,6 @@
 <?php
-abstract class jRest extends jController {
+abstract class jRest extends jController
+{
     /**
      * The method of the request made. Can be POST, PUT, GET or DELETE
      * @var string
@@ -28,7 +29,7 @@ abstract class jRest extends jController {
      * Header content-type of the response. Default is application/json
      * @var string
      */
-    protected $responseContentType   = 'application/json';
+    protected $responseContentType = 'application/json';
 
     /**
      * List of supported content-types that can be formatted by this class
@@ -36,9 +37,9 @@ abstract class jRest extends jController {
      */
     private $supportedContentTypes = [
         'application/json' => 'formatJSON',
-        'text/xml'         => 'formatXML',
-        'application/xml'  => 'formatXML',
-        'text/HTML'        => 'formatHTML'
+        'text/xml' => 'formatXML',
+        'application/xml' => 'formatXML',
+        'text/HTML' => 'formatHTML'
     ];
 
     /**
@@ -66,7 +67,8 @@ abstract class jRest extends jController {
      * Overrides and executes parents init(). Loads local properties based 
      * on the request and checks for authentication.
      */
-    public function init() {
+    public function init()
+    {
         parent::init();
         $this->loadTemplate = false;
         $this->parseApi = true;
@@ -77,7 +79,7 @@ abstract class jRest extends jController {
                 $this->sendError(401);
             }
         } catch (\Exception $e) {
-            $this->sendError(401, $e->getMessage()); 
+            $this->sendError(401, $e->getMessage());
         }
     }
 
@@ -90,7 +92,8 @@ abstract class jRest extends jController {
      * @param int    $code    HTTP response code
      * @param string $message message to be sent to client
      */
-    protected function sendError($code, $message = null) {
+    protected function sendError($code, $message = null)
+    {
         $this->respCode = $code;
         $this->response['error'] = $message ? $message : $this->getStatusCodeMessage($code);
         $this->sendResponse();
@@ -107,10 +110,11 @@ abstract class jRest extends jController {
      * @param string $view      name of the view to be rendered.
      * @param array  $variables list of variables to be rendered.
      */
-    public function render($view, $variables = array()) {
+    public function render($view, $variables = array())
+    {
         $this->loadResponseHeader();
         parent::render($view, $variables);
-        exit(); 
+        exit();
     }
 
     /**
@@ -121,7 +125,8 @@ abstract class jRest extends jController {
      *
      * @throws Exception if supplied content-type is not supported
      */
-    protected function setResponseType($contentType) {
+    protected function setResponseType($contentType)
+    {
         if (!array_key_exists($contentType, $this->supportedContentTypes)) {
             throw new Exception("content-type: $contentType not supported");
         }
@@ -134,7 +139,8 @@ abstract class jRest extends jController {
      * Parse request payload if request method is PUT or DELETE
      * and store them in an associative array.
      */
-    protected function setRequestPayload() {
+    protected function setRequestPayload()
+    {
         switch ($this->method) {
             case 'PUT':
                 parse_str(file_get_contents('php://input'), $this->putData);
@@ -154,7 +160,8 @@ abstract class jRest extends jController {
      * @param string $key key name of put data
      * @return mixed string if match found boolean false otherwise
      */
-    protected function put($key) {
+    protected function put($key)
+    {
         if (isset($this->putData[$key])) {
             return $this->putData[$key];
         }
@@ -170,7 +177,8 @@ abstract class jRest extends jController {
      * @param string $key key name of delete data
      * @return mixed string if match found boolean false otherwise
      */
-    protected function delete($key) {
+    protected function delete($key)
+    {
         if (isset($this->deleteData[$key])) {
             return $this->deleteData[$key];
         }
@@ -186,7 +194,8 @@ abstract class jRest extends jController {
      * @param  string  $expected expecetd method
      * @return boolean true if method is matched
      */
-    protected function checkRequestMethod($expected) {
+    protected function checkRequestMethod($expected)
+    {
         $this->allowedMethod = $expected;
         if ($this->method != $expected) {
             $this->sendError(405);
@@ -201,7 +210,8 @@ abstract class jRest extends jController {
      *
      * @return string JSON to be sent back to client as response.
      */
-    private function formatJSON(array $response) {
+    private function formatJSON(array $response)
+    {
         return json_encode($response);
     }
 
@@ -212,9 +222,10 @@ abstract class jRest extends jController {
      *
      * @return string XML to be sent back to client as response.
      */
-    private function formatXML(array $response) {
+    private function formatXML(array $response)
+    {
         $xml = new SimpleXMLElement('<root/>');
-        array_walk_recursive($response, array ($xml, 'addChild'));
+        array_walk_recursive($response, array($xml, 'addChild'));
         return $xml->asXML();
     }
 
@@ -225,17 +236,19 @@ abstract class jRest extends jController {
      *
      * @return string blank string
      */
-    private function formatHTML(array $response) {
+    private function formatHTML(array $response)
+    {
         return '';
     }
-     
+
 
     /**
      * Determins the method to be used for formating the response.
      *
      * @return string name of method to be used for formating response.
      */
-    private function getFormatter() {
+    private function getFormatter()
+    {
         return $this->supportedContentTypes[$this->responseContentType];
     }
 
@@ -245,16 +258,18 @@ abstract class jRest extends jController {
      * Last method to get executed. Prepares the response header and 
      * sends back the response in the formate specified.
      */
-    public function end() {
+    public function end()
+    {
         parent::end();
         $this->sendResponse();
     }
 
     /**
      * Loads response header as per response code and content-type
-     */ 
-    protected function loadResponseHeader() {
-        $status_header = 'HTTP/1.1 '.$this->respCode.' '.$this->getStatusCodeMessage($this->respCode);
+     */
+    protected function loadResponseHeader()
+    {
+        $status_header = 'HTTP/1.1 ' . $this->respCode . ' ' . $this->getStatusCodeMessage($this->respCode);
         // set the status
         header($status_header);
         // set the content type
@@ -267,7 +282,8 @@ abstract class jRest extends jController {
      * Loads response header and format response packet based on 
      * specification and sends response back to the client.
      */
-    protected function sendResponse() {
+    protected function sendResponse()
+    {
         // First prepare the header
         $this->loadResponseHeader();
         // Format and send the respose
@@ -280,8 +296,9 @@ abstract class jRest extends jController {
      * @param int $status HTTP status code
      * return mixed string short description if status exists, bool false otherwise
      */
-    public function getStatusCodeMessage($status) {
-        $codes = Array(
+    public function getStatusCodeMessage($status)
+    {
+        $codes = array(
             100 => 'Continue',
             101 => 'Switching Protocols',
             200 => 'OK',
@@ -326,5 +343,5 @@ abstract class jRest extends jController {
         );
 
         return (isset($codes[$status])) ? $codes[$status] : false;
-    } 
+    }
 }
