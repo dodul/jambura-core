@@ -1,5 +1,5 @@
 {
-  "name": "dodul/jambura-core",
+  "name": "prepmock/jambura-core",
   "version": "1.0",
   "require": {
     "robmorgan/phinx": "0.11.6"
