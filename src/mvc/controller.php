@@ -1,4 +1,6 @@
 <?php
+namespace Jambura\Mvc;
+
 class Controller
 {
     protected $loadTemplate = true;
