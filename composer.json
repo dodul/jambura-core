@@ -1,7 +1,18 @@
 {
-  "name": "prepmock/jambura-core",
-  "version": "1.0",
-  "require": {
-    "robmorgan/phinx": "0.11.6"
-  }
+    "name": "prepmock/jambura-core",
+    "description": "Lightweight PHP MVC framework",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Prepmock\\JamburaCore\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Kamrul Khan"
+        }
+    ],
+    "require": {
+        "robmorgan/phinx": "0.11.6"
+    }
 }
