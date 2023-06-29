@@ -1,5 +1,5 @@
 <?php
-class jController
+class Controller
 {
     protected $loadTemplate = true;
     protected $template = DEFAULT_TEMPLATE;

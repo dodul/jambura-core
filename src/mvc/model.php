@@ -1,10 +1,10 @@
 <?php
-namespace Jambura\App;
+namespace Jambura\Mvc;
 
 class JamburaValidationError extends \Exception{};
 class JamburaSystemError extends \Exception{};
 
-class JModel
+class Model
 {
     protected $table;
     protected $tableName;
