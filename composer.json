@@ -4,7 +4,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Prepmock\\JamburaCore\\": "src/"
+            "Jambura\\App\\": "src/"
         }
     },
     "authors": [
