@@ -7,7 +7,13 @@
             "Jambura\\Mvc\\": "src/mvc/"
         },
         "files": [
-            "src/helpers/jassets.php", "src/helpers/jcache.php", "src/helpers/jexceptions.php", "src/helpers/jflash.php"
+            "src/helpers/jassets.php",
+            "src/helpers/jcontroller.php",
+            "src/helpers/jcache.php", 
+            "src/helpers/jexceptions.php", 
+            "src/helpers/jflash.php",
+            "src/helpers/jmodel.php",
+            "src/helpers/jrouter.php"
         ]
     },
     "authors": [
